@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema name="mqtt5" endian="big" dslVersion="2">
+<schema name="mqtt5" endian="big" dslVersion="2" nonUniqueMsgIdAllowed="true">
     <fields>
 
         <!-- Message names -->
@@ -49,7 +49,8 @@
         <data name="BinData" lengthPrefix="Length" />
         <string reuse="String" name="ProtocolName" defaultValue="MQTT" displayName="Protocol Name"/>
         <int name="PacketId" type="uint16" displayName="Packet ID"/>
-        <ref name="Topic" field="String" />
+        <ref name="TopicName" field="String" />
+        <ref name="TopicFilter" field="String" />
         <int name="VarLenInt" type="uintvar" length="4" endian="little"/>
         <int name="PropertyId" reuse="VarLenInt" displayReadOnly="true" failOnInvalid="true" displayName="Id"/>
         <enum name="EnableEnum" type="uint8">
@@ -250,14 +251,6 @@
             <ref field="UserProperty"/>
         </variant>
 
-        <variant name="DisconnectProperty" displayIdxReadOnlyHidden="true" displayName="_">
-            <ref field="SessionExpiryInterval"/>
-            <ref field="ReasonStr"/>
-            <ref field="UserProperty"/>
-            <ref field="ServerRef"/>
-        </variant>
-
-        <!--
         <variant name="ClientDisconnectProperty" displayIdxReadOnlyHidden="true" displayName="_">
             <ref field="SessionExpiryInterval"/>
             <ref field="ReasonStr"/>
@@ -270,7 +263,6 @@
             <ref field="UserProperty"/>
             <ref field="ServerRef"/>
         </variant>
-        -->
 
         <variant name="AuthProperty" displayIdxReadOnlyHidden="true" displayName="_">
             <ref field="AuthMethod"/>
@@ -327,13 +319,6 @@
             </lengthPrefix>
         </list>
 
-        <list name="DisconnectPropertyList" element="DisconnectProperty" displayName="Disconnect Properties">
-            <lengthPrefix>
-                <int reuse="VarLenInt" name="Length" />
-            </lengthPrefix>
-        </list>
-
-        <!--
         <list name="ClientDisconnectPropertyList" element="ClientDisconnectProperty" displayName="Client Disconnect Properties">
             <lengthPrefix>
                 <int reuse="VarLenInt" name="Length" />
@@ -345,7 +330,6 @@
                 <int reuse="VarLenInt" name="Length" />
             </lengthPrefix>
         </list>
-        -->
 
         <list name="AuthPropertyList" element="AuthProperty" displayName="Auth Properties">
             <lengthPrefix>
@@ -531,7 +515,7 @@
             <ref field="WillPropertyList" name="WillProperty" displayName="Will Properties" />
         </optional>
         <optional name="WillTopic" displayName="Will Topic" defaultMode="missing" displayExtModeCtrl="true">
-            <ref name="Topic" field="String" displayName="Will Topic" />
+            <ref name="TopicName" field="String" displayName="Will Topic" />
         </optional>
         <optional name="WillMessage" displayName="Will Message" defaultMode="missing" displayExtModeCtrl="true">
             <ref name="WillMessage" field="BinData" displayName="Will Message" />
@@ -553,7 +537,7 @@
     </message>
 
     <message name="Publish" id="MsgId.Publish" displayName="^PublishName">
-        <ref field="Topic" />
+        <ref field="TopicName" />
         <optional name="PacketId" displayName="Packet ID" defaultMode="missing" displayExtModeCtrl="true">
             <field value="PacketId" />
         </optional>
@@ -579,7 +563,7 @@
         <list name="List">
             <element>
                 <bundle name="Element" displayName="_">
-                    <ref field="Topic" />
+                    <ref field="TopicFilter" />
                     <bitfield name="Options">
                         <ref field="Qos" bitLength="2" />
                         <set name="Bits" bitLength="2" displayName="_">
@@ -614,7 +598,7 @@
     <message name="Unsubscribe" id="MsgId.Unsubscribe" displayName="^UnsubscribeName" sender="client">
         <ref field="PacketId" />
         <ref field="UnsubscribePropertyList" name="Properties"/>
-        <list name="List" element="Topic" />
+        <list name="List" element="TopicFilter" />
     </message>
 
     <message name="Unsuback" id="MsgId.Unsuback" displayName="^UnsubackName" sender="server">
@@ -627,22 +611,15 @@
 
     <message name="Pingresp" id="MsgId.Pingresp" displayName="^PingrespName" sender="server"/>
 
-    <message name="Disconnect" id="MsgId.Disconnect" displayName="^DisconnectName" sender="client">
-        <ref field="DisconnectReasonCode" name="ReasonCode"/>
-        <ref field="DisconnectPropertyList" name="Properties"/>
-    </message>
-
-    <!--
-    <message name="ClientDisconnect" id="MsgId.Disconnect" displayName="^DisconnectName" sender="client">
+    <message name="ClientDisconnect" id="MsgId.Disconnect" order="2" displayName="^DisconnectName" sender="client">
         <ref field="DisconnectReasonCode" name="ReasonCode"/>
         <ref field="ClientDisconnectPropertyList" name="Properties"/>
     </message>
 
-    <message name="ServerDisconnect" id="MsgId.Disconnect" displayName="^DisconnectName" sender="server">
+    <message name="ServerDisconnect" id="MsgId.Disconnect" order="1" displayName="^DisconnectName" sender="server">
         <ref field="DisconnectReasonCode" name="ReasonCode"/>
         <ref field="ServerDisconnectPropertyList" name="Properties"/>
     </message>
-    -->
 
     <message name="Auth" id="MsgId.Auth" displayName="^AuthName">
         <ref field="AuthReasonCode" name="ReasonCode"/>
