@@ -65,7 +65,7 @@
             <validValue name="Enabled" val="1"/>
         </enum>
 
-        <!-- Property -->
+        <!-- Properties -->
 
         <bundle name="PayloadFormatIndicator" displayName="Property Format Indicator">
             <int reuse="PropertyId" name="Id" defaultValue="1" validValue="1"/>
@@ -519,7 +519,7 @@
         <int name="KeepAlive" type="uint16" displayName="Keep Alive" />
         <ref name="Properties" field="ConnectPropertyList"/>
         <ref name="ClientId" field="String" displayName="Client ID" />
-        <optional name="WillProperty"
+        <optional name="WillProperties"
                   defaultMode="missing"
                   displayExtModeCtrl="true"
                   displayName="Will Properties">
