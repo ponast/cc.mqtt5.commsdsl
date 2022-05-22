@@ -4,7 +4,7 @@ bool doRefresh()
     bool updated = Base::doRefresh();
     updated = refresh_willProperties() || updated;
     updated = refresh_willTopic() || updated;
-    updated = refresh_willMessage() || updated;
+    updated = refresh_willPayload() || updated;
     updated = refresh_userName() || updated;
     updated = refresh_password() || updated;
     return updated;
