@@ -3,18 +3,18 @@
     <fields>
 
         <!-- 1.5 Data representation -->
-        <int name="TwoByteInt" type="uint16" endian="little">
+        <int name="TwoByteInt" type="uint16">
             <description>
                 Defined in section 1.5.2.
             </description>
         </int>
-        <int name="FourByteInt" type="uint32" endian="little">
+        <int name="FourByteInt" type="uint32">
             <description>
                 Defined in section 1.5.3.
             </description>
         </int>
 
-        <int name="Utf8StringLength" reuse="TwoByteInt" units="byte" >
+        <int name="Utf8StringLength" reuse="TwoByteInt" units="byte">
             <description>
                 Defined in section 1.5.4.
             </description>
@@ -272,7 +272,7 @@
 
         <bundle name="PropertyTopicAliasMax" displayName="Topic Alias Maximum">
             <int name="Id"    reuse="PropertyIdentifier" defaultValidValue="PropertyIdentifierValue.TopicAliasMaximum"/>
-            <int name="Value" reuse="TwoByteInt"/>
+            <int name="Value" reuse="TwoByteInt" validMin="1"/>
         </bundle>
 
         <bundle name="PropertyTopicAlias" displayName="Topic Alias">
@@ -412,14 +412,14 @@
                             Defined in section 3.1.2.7.
                         </description>
                     </bit>
-                    <bit name="userNameFlag" idx="2" displayName="User Name Flag">
-                        <description>
-                            Defined in section 3.1.2.8.
-                        </description>
-                    </bit>
                     <bit name="passwordFlag" idx="1" displayName="Password Flag">
                         <description>
                             Defined in section 3.1.2.9.
+                        </description>
+                    </bit>
+                    <bit name="userNameFlag" idx="2" displayName="User Name Flag">
+                        <description>
+                            Defined in section 3.1.2.8.
                         </description>
                     </bit>
                 </set>
@@ -570,14 +570,14 @@
 
         <!-- 3.2 CONNACK – Connect acknowledgement -->
 
-        <set name="ConnackFlags" type="uint8" >
+        <set name="ConnectAcknowledgeFlags" type="uint8" >
             <description>
                 Defined in section 3.2.2.1.
             </description>
             <bit name="SessionPresent" idx="0" displayName="Session Present"/>
         </set>
 
-        <enum name="ConnackReasonCode" type="uint8" nonUniqueAllowed="false" displayName="Reason Code">
+        <enum name="ConnectReasonCode" type="uint8" nonUniqueAllowed="false" displayName="Reason Code">
             <description>
                 Defined in section 3.2.2.2.
             </description>
@@ -610,22 +610,39 @@
                 Defined in section 3.2.2.3.
             </description>
             <members>
+                <!-- 3.2.2.3.2 Session Expiry Interval -->
                 <ref name="SessionExpiryInterval" field="PropertySessionExpiryInterval"/>
+                <!-- 3.2.2.3.3 Receive Maximum -->
                 <ref name="ReceiveMax"            field="PropertyReceiveMax"           />
+                <!-- 3.2.2.3.4 Maximum QoS -->
                 <ref name="MaxQos"                field="PropertyMaxQos"               />
+                <!-- 3.2.2.3.5 Retain Available -->
                 <ref name="RetainAvailable"       field="PropertyRetainAvailable"      />
+                <!-- 3.2.2.3.6 Maximum Packet Size -->
                 <ref name="MaxPacketSize"         field="PropertyMaxPacketSize"        />
+                <!-- 3.2.2.3.7 Assigned Client Identifier -->
                 <ref name="AssignedClientId"      field="PropertyAssignedClientId"     />
+                <!-- 3.2.2.3.8 Topic Alias Maximum -->
                 <ref name="TopicAliasMax"         field="PropertyTopicAliasMax"        />
+                <!-- 3.2.2.3.9 Reason String -->
                 <ref name="ReasonString"          field="PropertyReasonString"         />
+                <!-- 3.2.2.3.10 User Property -->
                 <ref name="UserProperty"          field="PropertyUserProperty"         />
+                <!-- 3.2.2.3.11 Wildcard Subscription Available -->
                 <ref name="WildcardSubAvail"      field="PropertyWildcardSubAvail"     />
+                <!-- 3.2.2.3.12 Subscription Identifiers Available -->
                 <ref name="SubIdAvail"            field="PropertySubIdAvail"           />
+                <!-- 3.2.2.3.13 Shared Subscription Available -->
                 <ref name="SharedSubAvail"        field="PropertySharedSubAvail"       />
+                <!-- 3.2.2.3.14 Server Keep Alive -->
                 <ref name="ServerKeepAlive"       field="PropertyServerKeepAlive"      />
+                <!-- 3.2.2.3.15 Response Information -->
                 <ref name="ResponseInfo"          field="PropertyResponseInfo"         />
+                <!-- 3.2.2.3.16 Server Reference -->
                 <ref name="ServerReference"       field="PropertyServerReference"      />
+                <!-- 3.2.2.3.17 Authentication Method -->
                 <ref name="AuthMethod"            field="PropertyAuthMethod"           />
+                <!-- 3.2.2.3.18 Authentication Data -->
                 <ref name="AuthData"              field="PropertyAuthData"             />
             </members>
         </variant>
@@ -792,12 +809,12 @@
                 Defined in section 3.8.3.1.
             </description>
             <members>
-                <ref field="Qos" bitLength="2" />
+                <ref name="MaxQos" field="Qos" bitLength="2" />
                 <set name="Bits" bitLength="2" displayName="_">
                     <bit name="NoLocal" idx="0" />
                     <bit name="RetainAsPublished" idx="1" />
                 </set>
-                <enum name="RetainHandling" type="uint8" bitLength="2" displayName="Retain Handling">
+                <enum name="RetainHandling" type="uint8" bitLength="2">
                     <validValue name="Send" val="0" />
                     <validValue name="SendIfNotExists" val="1" />
                     <validValue name="DontSend" val="2" />
@@ -996,13 +1013,20 @@
 
         <!-- 3.15 AUTH – Authentication exchange -->
 
-        <enum name="AuthReasonCode" type="uint8" nonUniqueAllowed="false" displayName="Reason Code">
+        <enum name="ClientAuthReasonCode" type="uint8" nonUniqueAllowed="false" displayName="Client Reason Code">
+            <description>
+                Defined in section 3.15.2.1.
+            </description>
+            <validValue name="ContinueAuth" val="ReasonCode.ContinueAuth" displayName="Continue authentication" />
+            <validValue name="ReAuth"       val="ReasonCode.ReAuth"       displayName="Re-authenticate" />
+        </enum>
+
+        <enum name="ServerAuthReasonCode" type="uint8" nonUniqueAllowed="false" displayName="Server Reason Code">
             <description>
                 Defined in section 3.15.2.1.
             </description>
             <validValue name="Success"      val="ReasonCode.Success" />
             <validValue name="ContinueAuth" val="ReasonCode.ContinueAuth" displayName="Continue authentication" />
-            <validValue name="ReAuth"       val="ReasonCode.ReAuth"       displayName="Re-authenticate" />
         </enum>
 
         <variant name="AuthProperty" displayIdxReadOnlyHidden="true" displayName="_">
@@ -1080,8 +1104,8 @@
     </message>
 
     <message name="Connack" id="MsgId.Connack" displayName="^ConnackPacketName" sender="server">
-        <ref name="Flags"      field="ConnackFlags"/>
-        <ref name="ReasonCode" field="ConnackReasonCode"/>
+        <ref name="Flags"      field="ConnectAcknowledgeFlags"/>
+        <ref name="ReasonCode" field="ConnectReasonCode"/>
         <ref name="Properties" field="ConnackProperties"/>
     </message>
 
@@ -1156,8 +1180,13 @@
         <ref name="Properties" field="ServerDisconnectProperties"/>
     </message>
 
-    <message name="Auth" id="MsgId.Auth" displayName="^AuthPacketName">
-        <ref name="ReasonCode" field="AuthReasonCode"/>
+    <message name="ClientAuth" id="MsgId.Auth" order="2"  displayName="^AuthPacketName">
+        <ref name="ReasonCode" field="ClientAuthReasonCode"/>
+        <ref name="Properties" field="AuthProperties"/>
+    </message>
+
+    <message name="ServerAuth" id="MsgId.Auth" order="1" displayName="^AuthPacketName">
+        <ref name="ReasonCode" field="ServerAuthReasonCode"/>
         <ref name="Properties" field="AuthProperties"/>
     </message>
 
