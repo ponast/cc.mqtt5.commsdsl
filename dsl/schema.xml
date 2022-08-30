@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema name="mqtt5" endian="big" dslVersion="4" nonUniqueMsgIdAllowed="true">
+<schema name="mqtt5" endian="big" dslVersion="5" nonUniqueMsgIdAllowed="true">
     <fields>
 
         <!-- 1.5 Data representation -->
@@ -138,7 +138,7 @@
             </description>
         </int>
 
-        <int name="PropertyIdentifier" reuse="VarByteInt">
+        <int name="PropertyIdentifier" reuse="VarByteInt" failOnInvalid="true">
             <description>
                 Defined in section 2.2.2.2.
             </description>
@@ -272,7 +272,7 @@
 
         <bundle name="PropertyTopicAliasMax" displayName="Topic Alias Maximum">
             <int name="Id"    reuse="PropertyIdentifier" defaultValidValue="PropertyIdentifierValue.TopicAliasMaximum"/>
-            <int name="Value" reuse="TwoByteInt" validMin="1"/>
+            <int name="Value" reuse="TwoByteInt" defaultValue="0"/>
         </bundle>
 
         <bundle name="PropertyTopicAlias" displayName="Topic Alias">
@@ -1081,7 +1081,7 @@
         </custom>
         <size name="Size">
             <field>
-                <int name="Size" type="uintvar" length="4" endian="little" units="bytes"/>
+                <int name="Size" reuse="VarByteInt" units="bytes"/>
             </field>
         </size>
         <payload name="Data"/>
