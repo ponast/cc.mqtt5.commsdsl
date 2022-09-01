@@ -1,5 +1,6 @@
 /// @brief Custom validity check
 bool valid() const
 {
-    return ::utf8::valid_mqtt_topic_filter( TopicFilter().value().c_str() );
+    return ::utf8::valid_mqtt_topic_filter(
+        reinterpret_cast< unsigned char const * >( TopicFilter().value().c_str() ));
 }

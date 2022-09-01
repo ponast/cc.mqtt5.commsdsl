@@ -1,5 +1,6 @@
 /// @brief Custom validity check
 bool valid() const
 {
-    return ::utf8::valid_mqtt_string( Utf8String().value().c_str() );
+    return ::utf8::valid_mqtt_string(
+        reinterpret_cast< unsigned char const * >( Utf8String().value().c_str() ));
 }
